@@ -3,7 +3,9 @@ let restaurants,
   cuisines
 var map
 var markers = []
-
+if(navigator.serviceWorker) {
+  navigator.serviceWorker.register('/sw.js').then(function(){console.log('serviceWorker registered');});
+}
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
