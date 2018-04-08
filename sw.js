@@ -9,7 +9,8 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
-        '/',
+        '/index.html',
+        '/restaurant.html',
         'js/main.js',
         'js/dbhelper.js',
         'js/restaurant_info.js',
@@ -52,7 +53,7 @@ self.addEventListener('fetch', function(event) {
 
 
 function servePhoto(request) {
-  var storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
+  var storageUrl = request.url;
   console.log('serving photos...');
   return caches.open(contentImgsCache).then(function(cache) {
     return cache.match(storageUrl).then(function(response) {
@@ -65,9 +66,3 @@ function servePhoto(request) {
     });
   });
 }
-
-self.addEventListener('message', function(event) {
-  if (event.data.action === 'skipWaiting') {
-    self.skipWaiting();
-  }
-});
