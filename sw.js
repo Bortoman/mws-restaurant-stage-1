@@ -6,6 +6,7 @@ var allCaches = [
 ];
 
 self.addEventListener('install', function(event) {
+  const request = new Request('https://maps.googleapis.com/maps/api/js?key=AIzaSyAPNrZ0pb8b1SckgtM9vMumf--fb8t3kkY&libraries=places&callback=initMap', {mode: 'no-cors'});
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
@@ -39,6 +40,10 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   var requestUrl = new URL(event.request.url);
   if (requestUrl.origin === location.origin) {
+    if (requestUrl.pathname === '/') {
+      event.respondWith(caches.match('/index.html'));
+      return;
+    }
     if (requestUrl.pathname.startsWith('/img/')) {
       event.respondWith(servePhoto(event.request));
       return;
