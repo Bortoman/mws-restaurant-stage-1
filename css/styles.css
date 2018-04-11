@@ -315,6 +315,7 @@ nav h1 a {
 	.inside #map-container{
 		order: 3;
 		height: 400px;
+		margin-bottom: 65px;
 	}
 	#restaurants-list li{
 		width: calc(50% - 94px);
@@ -346,6 +347,8 @@ nav h1 a {
 		width: 50%;
 		order: 2;
 		height: auto;
+		margin-top: 130px;
+		margin-bottom: 0;
 	}
 
 }
