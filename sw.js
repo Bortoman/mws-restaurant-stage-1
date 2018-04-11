@@ -5,10 +5,12 @@ var allCaches = [
   contentImgsCache
 ];
 
+
 self.addEventListener('install', function(event) {
   const request = new Request('https://maps.googleapis.com/maps/api/js?key=AIzaSyAPNrZ0pb8b1SckgtM9vMumf--fb8t3kkY&libraries=places&callback=initMap', {mode: 'no-cors'});
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
+      fetch(request).then(response => cache.put(request, response));
       return cache.addAll([
         '/index.html',
         '/restaurant.html',
@@ -63,7 +65,6 @@ function servePhoto(request) {
   return caches.open(contentImgsCache).then(function(cache) {
     return cache.match(storageUrl).then(function(response) {
       if (response) return response;
-
       return fetch(request).then(function(networkResponse) {
         cache.put(storageUrl, networkResponse.clone());
         return networkResponse;
