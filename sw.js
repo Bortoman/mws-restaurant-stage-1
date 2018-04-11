@@ -1,19 +1,19 @@
 var staticCacheName = 'restaurants-reviews-content';
 var contentImgsCache = 'restaurants-reviews-content-imgs';
+var mapCache ='restaurants-google-maps-content';
 var allCaches = [
   staticCacheName,
-  contentImgsCache
+  contentImgsCache,
+  mapCache
 ];
 
 
 self.addEventListener('install', function(event) {
-  const request = new Request('https://maps.googleapis.com/maps/api/js?key=AIzaSyAPNrZ0pb8b1SckgtM9vMumf--fb8t3kkY&libraries=places&callback=initMap', {mode: 'no-cors'});
+  console.log('installing...');
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
-      fetch(request).then(response => cache.put(request, response));
       return cache.addAll([
         '/index.html',
-        '/restaurant.html',
         'js/main.js',
         'js/dbhelper.js',
         'js/restaurant_info.js',
@@ -53,9 +53,22 @@ self.addEventListener('fetch', function(event) {
   }
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
-  );
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+        var fetchRequest = event.request.clone();
+        return fetch(fetchRequest).then(function(response) {
+            var responseToCache = response.clone();
+            // Caching response for google maps and saving only current frame
+            caches.open(mapCache).then(function(cache) {
+                cache.put(event.request, responseToCache);
+              });
+            return response;
+          }
+        );
+      })
+    );
 });
 
 
